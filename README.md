@@ -45,6 +45,8 @@ todo-api/
 ```
 
 ## ⚙️ Instruções de instalação
+### Configuração
+A aplicação utiliza a variável `DATABASE_URL` para configurar a conexão com o banco de dados PostgreSQL.
 
 ### Opção 1 — Rodando com Docker (recomendado)
 
