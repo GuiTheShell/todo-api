@@ -115,6 +115,6 @@ mais detalhes.
 
 ## 👥 Equipe
 
-- Integrante 1 — RU: 0000000
-- Integrante 2 — RU: 0000000
-- Integrante 3 — RU: 0000000
+- Bruno Sampaio Sobreira — RU: 5217388
+- Guilherme Santos Silva — RU: 4603410
+- Miria Rogerio Mangueira da Silva — RU: 5152333
