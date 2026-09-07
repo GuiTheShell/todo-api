@@ -16,7 +16,14 @@ def index():
 
 @app.route("/tasks", methods=["GET"])
 def list_tasks():
-    tasks = Task.query.all()
+    completed_param = request.args.get("completed")
+
+    if completed_param is not None:
+        completed_bool = completed_param.lower() == "true"
+        tasks = Task.query.filter_by(completed=completed_bool).all()
+    else:
+        tasks = Task.query.all()
+
     return jsonify([task.to_dict() for task in tasks])
 
 
