@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-
+VALID_PRIORITIES = ["baixa", "média", "alta"]
 
 
 @app.route("/", methods=["GET"])
@@ -33,10 +33,18 @@ def create_task():
     if not data or not data.get("title"):
         return jsonify({"error": "O campo 'title' é obrigatório"}), 400
 
+    priority = data.get("priority", "média")
+
+    if priority not in VALID_PRIORITIES:
+        return jsonify({
+            "error": "O campo 'priority' deve ser: baixa, média ou alta"
+        }), 400
+
     task = Task(
         title=data["title"],
         description=data.get("description", ""),
         completed=False,
+        priority=priority,
     )
     db.session.add(task)
     db.session.commit()
@@ -51,6 +59,15 @@ def update_task(task_id):
     task.title = data.get("title", task.title)
     task.description = data.get("description", task.description)
     task.completed = data.get("completed", task.completed)
+
+    if "priority" in data:
+        if data["priority"] not in VALID_PRIORITIES:
+            return jsonify({
+                "error": "O campo 'priority' deve ser: baixa, média ou alta"
+            }), 400
+
+        task.priority = data["priority"]
+
 
     db.session.commit()
     return jsonify(task.to_dict())
@@ -67,9 +84,12 @@ def complete_task(task_id):
 @app.route("/tasks/<int:task_id>", methods=["DELETE"])
 def delete_task(task_id):
     task = Task.query.get_or_404(task_id)
+
     db.session.delete(task)
     db.session.commit()
-    return jsonify({"message": "Tarefa removida com sucesso"})
+    return jsonify({"message": "Tarefa removida com sucesso",
+                    
+                    })
 
 
 if __name__ == "__main__":
