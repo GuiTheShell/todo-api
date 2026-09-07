@@ -16,7 +16,13 @@ def index():
 
 @app.route("/tasks", methods=["GET"])
 def list_tasks():
-    tasks = Task.query.all()
+    search = request.args.get("search")
+
+    if search:
+        tasks = Task.query.filter(Task.title.ilike(f"%{search}%")).all()
+    else:
+        tasks = Task.query.all()
+
     return jsonify([task.to_dict() for task in tasks])
 
 
