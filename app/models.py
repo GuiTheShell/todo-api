@@ -12,6 +12,8 @@ class Task(db.Model):
     description = db.Column(db.String(255), nullable=True)
     completed = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    priority = db.Column(db.String(10), nullable=False,
+    default="média")
 
     def to_dict(self):
         return {
@@ -20,4 +22,7 @@ class Task(db.Model):
             "description": self.description,
             "completed": self.completed,
             "created_at": self.created_at.isoformat(),
+            "priority": self.priority
         }
+    
+  

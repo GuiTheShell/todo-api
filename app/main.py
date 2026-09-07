@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-
+VALID_PRIORITIES = ["baixa", "média", "alta"]
 
 
 @app.route("/", methods=["GET"])
@@ -17,11 +17,18 @@ def index():
 @app.route("/tasks", methods=["GET"])
 def list_tasks():
     search = request.args.get("search")
+    completed_param = request.args.get("completed")
+
+    query = Task.query
 
     if search:
-        tasks = Task.query.filter(Task.title.ilike(f"%{search}%")).all()
-    else:
-        tasks = Task.query.all()
+        query = query.filter(Task.title.ilike(f"%{search}%"))
+
+    if completed_param is not None:
+        completed_bool = completed_param.lower() == "true"
+        query = query.filter_by(completed=completed_bool)
+
+    tasks = query.all()
 
     return jsonify([task.to_dict() for task in tasks])
 
@@ -39,13 +46,23 @@ def create_task():
     if not data or not data.get("title"):
         return jsonify({"error": "O campo 'title' é obrigatório"}), 400
 
+    priority = data.get("priority", "média")
+
+    if priority not in VALID_PRIORITIES:
+        return jsonify({
+            "error": "O campo 'priority' deve ser: baixa, média ou alta"
+        }), 400
+
     task = Task(
         title=data["title"],
         description=data.get("description", ""),
         completed=False,
+        priority=priority,
     )
+
     db.session.add(task)
     db.session.commit()
+
     return jsonify(task.to_dict()), 201
 
 
@@ -58,27 +75,43 @@ def update_task(task_id):
     task.description = data.get("description", task.description)
     task.completed = data.get("completed", task.completed)
 
+    if "priority" in data:
+        if data["priority"] not in VALID_PRIORITIES:
+            return jsonify({
+                "error": "O campo 'priority' deve ser: baixa, média ou alta"
+            }), 400
+
+        task.priority = data["priority"]
+
     db.session.commit()
+
     return jsonify(task.to_dict())
 
 
 @app.route("/tasks/<int:task_id>/complete", methods=["PATCH"])
 def complete_task(task_id):
     task = Task.query.get_or_404(task_id)
+
     task.completed = True
     db.session.commit()
+
     return jsonify(task.to_dict())
 
 
 @app.route("/tasks/<int:task_id>", methods=["DELETE"])
 def delete_task(task_id):
     task = Task.query.get_or_404(task_id)
+
     db.session.delete(task)
     db.session.commit()
-    return jsonify({"message": "Tarefa removida com sucesso"})
+
+    return jsonify({
+        "message": "Tarefa removida com sucesso"
+    })
 
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+
     app.run(host="0.0.0.0", port=5000, debug=True)
