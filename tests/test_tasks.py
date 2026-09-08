@@ -58,3 +58,20 @@ def test_delete_task(client):
 
     get_response = client.get(f"/tasks/{created['id']}")
     assert get_response.status_code == 404
+
+
+def test_search_tasks(client):
+    client.post("/tasks", json={"title": "Estudar DevOps"})
+    client.post("/tasks", json={"title": "Fazer compras"})
+    client.post("/tasks", json={"title": "Estudar Python"})
+
+    response = client.get("/tasks?search=estudar")
+
+    assert response.status_code == 200
+    data = response.get_json()
+
+    assert len(data) == 2
+    assert {task["title"] for task in data} == {
+        "Estudar DevOps",
+        "Estudar Python",
+    }

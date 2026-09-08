@@ -16,13 +16,19 @@ def index():
 
 @app.route("/tasks", methods=["GET"])
 def list_tasks():
+    search = request.args.get("search")
     completed_param = request.args.get("completed")
+
+    query = Task.query
+
+    if search:
+        query = query.filter(Task.title.ilike(f"%{search}%"))
 
     if completed_param is not None:
         completed_bool = completed_param.lower() == "true"
-        tasks = Task.query.filter_by(completed=completed_bool).all()
-    else:
-        tasks = Task.query.all()
+        query = query.filter_by(completed=completed_bool)
+
+    tasks = query.all()
 
     return jsonify([task.to_dict() for task in tasks])
 
@@ -53,8 +59,10 @@ def create_task():
         completed=False,
         priority=priority,
     )
+
     db.session.add(task)
     db.session.commit()
+
     return jsonify(task.to_dict()), 201
 
 
@@ -75,16 +83,18 @@ def update_task(task_id):
 
         task.priority = data["priority"]
 
-
     db.session.commit()
+
     return jsonify(task.to_dict())
 
 
 @app.route("/tasks/<int:task_id>/complete", methods=["PATCH"])
 def complete_task(task_id):
     task = Task.query.get_or_404(task_id)
+
     task.completed = True
     db.session.commit()
+
     return jsonify(task.to_dict())
 
 
@@ -94,12 +104,14 @@ def delete_task(task_id):
 
     db.session.delete(task)
     db.session.commit()
-    return jsonify({"message": "Tarefa removida com sucesso",
-                    
-                    })
+
+    return jsonify({
+        "message": "Tarefa removida com sucesso"
+    })
 
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+
     app.run(host="0.0.0.0", port=5000, debug=True)
