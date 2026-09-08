@@ -9,7 +9,9 @@ services:
     environment:
       DATABASE_URL: postgresql://todo_user:todo_pass@db:5432/todo_db
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
     restart: on-failure
 
   db:
@@ -23,6 +25,12 @@ services:
       - "5432:5432"
     volumes:
       - todo_db_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todo_user -d todo_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5  
 
 volumes:
   todo_db_data:
