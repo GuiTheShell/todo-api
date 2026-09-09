@@ -75,3 +75,26 @@ def test_search_tasks(client):
         "Estudar DevOps",
         "Estudar Python",
     }
+
+
+def test_get_task_not_found(client):
+    response = client.get("/tasks/9999")
+    assert response.status_code == 404
+
+
+def test_update_task_not_found(client):
+    response = client.put("/tasks/9999", json={"title": "Teste"})
+    assert response.status_code == 404
+
+
+def test_delete_task_not_found(client):
+    response = client.delete("/tasks/9999")
+    assert response.status_code == 404
+
+
+def test_create_task_invalid_priority(client):
+    response = client.post("/tasks", json={
+        "title": "Tarefa teste",
+        "priority": "urgentissimo"
+    })
+    assert response.status_code == 400
