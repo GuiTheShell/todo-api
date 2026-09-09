@@ -113,7 +113,7 @@ desenvolvimento seja idêntico ao de produção, eliminando o clássico problema
 Este projeto está licenciado sob a licença MIT — veja o arquivo [LICENSE](LICENSE) para
 mais detalhes.
 
-## 👥 Equipe
+## 👥 Nossa Equipe
 
 - Bruno Sampaio Sobreira — RU: 5217388
 - Guilherme Santos Silva — RU: 4603410
