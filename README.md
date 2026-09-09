@@ -45,7 +45,9 @@ todo-api/
 ```
 
 ## ⚙️ Instruções de instalação
+
 ### Configuração
+
 A aplicação utiliza a variável `DATABASE_URL` para configurar a conexão com o banco de dados PostgreSQL.
 
 ### Opção 1 — Rodando com Docker (recomendado)
@@ -74,15 +76,15 @@ python -m app.main
 
 Com os containers rodando, use os endpoints abaixo (via Postman, Insomnia ou curl):
 
-| Método | Rota                     | Descrição                     |
-|--------|---------------------------|--------------------------------|
-| GET    | `/`                        | Verifica se a API está no ar   |
-| GET    | `/tasks`                   | Lista todas as tarefas         |
-| GET    | `/tasks/<id>`               | Busca uma tarefa específica    |
-| POST   | `/tasks`                   | Cria uma nova tarefa           |
-| PUT    | `/tasks/<id>`               | Atualiza uma tarefa            |
-| PATCH  | `/tasks/<id>/complete`      | Marca tarefa como concluída    |
-| DELETE | `/tasks/<id>`               | Remove uma tarefa              |
+| Método | Rota                   | Descrição                    |
+| ------ | ---------------------- | ---------------------------- |
+| GET    | `/`                    | Verifica se a API está no ar |
+| GET    | `/tasks`               | Lista todas as tarefas       |
+| GET    | `/tasks/<id>`          | Busca uma tarefa específica  |
+| POST   | `/tasks`               | Cria uma nova tarefa         |
+| PUT    | `/tasks/<id>`          | Atualiza uma tarefa          |
+| PATCH  | `/tasks/<id>/complete` | Marca tarefa como concluída  |
+| DELETE | `/tasks/<id>`          | Remove uma tarefa            |
 
 ### Exemplo de criação de tarefa
 
